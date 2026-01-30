@@ -35,7 +35,7 @@ fn main_page_mode_select ( characters_settings: &mut Characters )
         {
             1 => print!("\x1B[2J"),
             2 => setting_mode_select ( characters_settings ),
-            3 => std::process::exit(0),
+            3 => return,
             _ => ()
         }
     }
@@ -53,7 +53,7 @@ fn setting_mode_select ( characters_settings: &mut Characters )
         match read! ()
         {
             1 => using_characters ( characters_settings ),
-            2 => main_page_mode_select ( characters_settings ),
+            2 => return,
             _ => ()
         }
     }
@@ -77,9 +77,8 @@ fn using_characters ( characters_settings: &mut Characters )
             2 => characters_settings.lowercase = !characters_settings.lowercase,
             3 => characters_settings.numbers = !characters_settings.numbers,
             4 => characters_settings.symbols = !characters_settings.symbols,
-            5 => { setting_mode_select ( characters_settings ); break; },
+            5 => return,
             _ => (),
         }
     }
 }
-
