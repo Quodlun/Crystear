@@ -1,10 +1,11 @@
+use text_io::read;
+
 fn main ()
 {
-    let length_input: &str;
+    println! ( "Welcome To Crystear." );
+    
+    print! ( "Password Length: ");
+    let password_length: i32 = read! ();
 
-    print! ( "Welcome To Crystear.\nPassword Length: " );
-
-    length_input = "20";
-
-    print! ( "Length Set To: {}\n", length_input );
+    print! ( "Length Set To: {}\n", password_length );
 }
