@@ -25,7 +25,7 @@ fn main_page_mode_select ( characters_settings: &mut Characters )
 {
     loop
     {
-        print!("\x1B[2J");
+        print!("\x1B[2J\x1B[H");
         println! ( "Welcome To Crystear." );
         println! ( "1. Generate Password" );
         println! ( "2. Settings" );
@@ -45,7 +45,7 @@ fn setting_mode_select ( characters_settings: &mut Characters )
 {
     loop
     {
-        print!("\x1B[2J");
+        print!("\x1B[2J\x1B[H");
         println! ( "Settings Menu:" );
         println! ( "1. Using Characters" );
         println! ( "2. Back" );
@@ -63,22 +63,26 @@ fn using_characters ( characters_settings: &mut Characters )
 {
     loop
     {
-        print!("\x1B[2J");
+        print!("\x1B[2J\x1B[H");
         println! ( "Character Settings: (Select Numbers To Change " );
-        println! ( "1. Use Uppercase Letters: {}", characters_settings.uppercase );
-        println! ( "2. Use Lowercase Letters: {}", characters_settings.lowercase );
-        println! ( "3. Use Numbers: {}", characters_settings.numbers );
-        println! ( "4. Use Symbols: {}", characters_settings.symbols );
+        println!("Character Settings: (Select Numbers To Toggle)");
+        println!("1. [ {} ] Uppercase Letters", if characters_settings.uppercase { "V" } else { " " });
+        println!("2. [ {} ] Lowercase Letters", if characters_settings.lowercase { "V" } else { " " });
+        println!("3. [ {} ] Numbers", if characters_settings.numbers { "V" } else { " " });
+        println!("4. [ {} ] Symbols", if characters_settings.symbols { "V" } else { " " });
         println! ( "5. Back" );
 
-        match  read! ()
+        if characters_settings.uppercase || characters_settings.lowercase || characters_settings.numbers || characters_settings.symbols
         {
-            1 => characters_settings.uppercase = !characters_settings.uppercase,
-            2 => characters_settings.lowercase = !characters_settings.lowercase,
-            3 => characters_settings.numbers = !characters_settings.numbers,
-            4 => characters_settings.symbols = !characters_settings.symbols,
-            5 => return,
-            _ => (),
+            match  read! ()
+            {
+                1 => characters_settings.uppercase = !characters_settings.uppercase,
+                2 => characters_settings.lowercase = !characters_settings.lowercase,
+                3 => characters_settings.numbers = !characters_settings.numbers,
+                4 => characters_settings.symbols = !characters_settings.symbols,
+                5 => return,
+                _ => (),
+            }
         }
     }
 }
