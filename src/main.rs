@@ -8,6 +8,59 @@ struct Characters
     symbols: bool,
 }
 
+impl Characters
+{
+    fn active_count_check ( &self ) -> bool
+    {
+        let active_count = [ self.uppercase, self.lowercase, self.numbers, self.symbols ]
+            .iter()
+            .filter( | &&active | active )
+            .count();   
+
+        active_count == 1
+    }
+    
+    pub fn toggle_uppercase ( &mut self )
+    {
+        if self.uppercase && self.active_count_check()
+        {
+            return;
+        }
+
+        self.uppercase = !self.uppercase;
+    }
+
+    pub fn toggle_lowercase ( &mut self )
+    {
+        if self.lowercase && self.active_count_check()
+        {
+            return;
+        }
+
+        self.lowercase = !self.lowercase;
+    }
+
+    pub fn toggle_numbers ( &mut self )
+    {
+        if self.numbers && self.active_count_check()
+        {
+            return;
+        }
+
+        self.numbers = !self.numbers;
+    }
+
+    pub fn toggle_symbols ( &mut self )
+    {
+        if self.symbols && self.active_count_check()
+        {
+            return;
+        }
+
+        self.symbols = !self.symbols;
+    }
+}
+
 fn main ()
 {
     let mut characters_settings: Characters = Characters
@@ -72,17 +125,14 @@ fn using_characters ( characters_settings: &mut Characters )
         println!("4. [ {} ] Symbols", if characters_settings.symbols { "V" } else { " " });
         println! ( "5. Back" );
 
-        if characters_settings.uppercase || characters_settings.lowercase || characters_settings.numbers || characters_settings.symbols
+        match  read! ()
         {
-            match  read! ()
-            {
-                1 => characters_settings.uppercase = !characters_settings.uppercase,
-                2 => characters_settings.lowercase = !characters_settings.lowercase,
-                3 => characters_settings.numbers = !characters_settings.numbers,
-                4 => characters_settings.symbols = !characters_settings.symbols,
-                5 => return,
-                _ => (),
-            }
+            1 => characters_settings.toggle_uppercase (),
+            2 => characters_settings.toggle_lowercase (),
+            3 => characters_settings.toggle_numbers (),
+            4 => characters_settings.toggle_symbols (),
+            5 => return,
+            _ => (),
         }
     }
 }
