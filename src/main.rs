@@ -59,6 +59,21 @@ impl Characters
 
         self.symbols = !self.symbols;
     }
+
+    pub fn get_pool ( &self ) -> String
+    {
+        let mut pool = String::new();
+
+        if self.uppercase { pool.push_str ( "ABCDEFGHIJKLMNOPQRSTUVWXYZ" ); }
+
+        if self.lowercase { pool.push_str ( "abcdefghijklmnopqrstuvwxyz" ); }
+
+        if self.numbers { pool.push_str ( "0123456789" ); }
+
+        if self.symbols { pool.push_str ( "!@#$%^&*()-_=+[]{}|;:',.<>?/`~" ); }
+
+        pool
+    }
 }
 
 fn main ()
@@ -86,12 +101,18 @@ fn main_page_mode_select ( characters_settings: &mut Characters )
 
         match read! ()
         {
-            1 => print!("\x1B[2J"),
+            1 => generate_password ( characters_settings ),
             2 => setting_mode_select ( characters_settings ),
             3 => return,
             _ => ()
         }
     }
+}
+
+fn generate_password ( characters_settings: &Characters )
+{
+    let pool = characters_settings.get_pool ();
+    println! ( "Character Pool: {}", pool );
 }
 
 fn setting_mode_select ( characters_settings: &mut Characters )
