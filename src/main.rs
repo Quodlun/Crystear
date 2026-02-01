@@ -127,6 +127,8 @@ fn generate_password ( characters_settings: &Characters )
         print! ( "{}", chars [ rng.random_range ( 0 ..= chars.len () ) ] );
     }
 
+    print! ( "\n" );
+
     let _: i32 = read! ();
 }
 
