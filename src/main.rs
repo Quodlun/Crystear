@@ -121,14 +121,14 @@ fn generate_password ( characters_settings: &Characters )
 
     let pool = characters_settings.get_pool ();
     let chars: Vec<char> = pool.chars ().collect ();
+    let mut result: String = String::new ();
     
     for _ in 0 .. length
     {
-        print! ( "{}", chars [ rng.random_range ( 0 .. chars.len () ) ] );
+        result.push ( chars [ rng.random_range ( 0 .. chars.len () ) ] );
     }
 
-    print! ( "\n" );
-
+    println! ( "{}", result );
     let _: String = read! ( "\n{}" );
 }
 
