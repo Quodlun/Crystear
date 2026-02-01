@@ -129,7 +129,7 @@ fn generate_password ( characters_settings: &Characters )
 
     print! ( "\n" );
 
-    let _: i32 = read! ();
+    let _: String = read! ( "\n{}" );
 }
 
 fn setting_mode_select ( characters_settings: &mut Characters )
