@@ -111,8 +111,21 @@ fn main_page_mode_select ( characters_settings: &mut Characters )
 
 fn generate_password ( characters_settings: &Characters )
 {
+    print! ( "\x1B[2J\x1B[H" );
+    println! ( "Generate Password" );
+
+    print! ( "Password Length: " );
+    let length:usize = read! ();
+
     let pool = characters_settings.get_pool ();
-    println! ( "Character Pool: {}", pool );
+    let chars: Vec<char> = pool.chars ().collect ();
+    
+    for length in 1 ..= length
+    {
+        println! ( "{}: {}", length, chars [ length ] );
+    }
+
+    let _: i32 = read! ();
 }
 
 fn setting_mode_select ( characters_settings: &mut Characters )
