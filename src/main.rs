@@ -1,4 +1,5 @@
 use text_io::read;
+use rand::prelude::*;
 
 struct Characters
 {
@@ -111,6 +112,7 @@ fn main_page_mode_select ( characters_settings: &mut Characters )
 
 fn generate_password ( characters_settings: &Characters )
 {
+    let mut rng = rand::rng ();
     print! ( "\x1B[2J\x1B[H" );
     println! ( "Generate Password" );
 
@@ -120,9 +122,9 @@ fn generate_password ( characters_settings: &Characters )
     let pool = characters_settings.get_pool ();
     let chars: Vec<char> = pool.chars ().collect ();
     
-    for length in 1 ..= length
+    for _ in 0 .. length
     {
-        println! ( "{}: {}", length, chars [ length ] );
+        print! ( "{}", chars [ rng.random_range ( 0 ..= chars.len () ) ] );
     }
 
     let _: i32 = read! ();
