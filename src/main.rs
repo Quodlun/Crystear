@@ -20,45 +20,30 @@ impl Characters
 
         active_count == 1
     }
+
+    fn can_toggle ( &self, currently_on: bool ) -> bool
+    {
+        !( currently_on && self.active_count_check() )
+    }
     
     pub fn toggle_uppercase ( &mut self )
     {
-        if self.uppercase && self.active_count_check()
-        {
-            return;
-        }
-
-        self.uppercase = !self.uppercase;
+        if self.can_toggle (self.uppercase) { self.uppercase = !self.uppercase };
     }
 
     pub fn toggle_lowercase ( &mut self )
     {
-        if self.lowercase && self.active_count_check()
-        {
-            return;
-        }
-
-        self.lowercase = !self.lowercase;
+        if self.can_toggle (self.lowercase) { self.lowercase = !self.lowercase };
     }
 
     pub fn toggle_numbers ( &mut self )
     {
-        if self.numbers && self.active_count_check()
-        {
-            return;
-        }
-
-        self.numbers = !self.numbers;
+        if self.can_toggle (self.numbers) { self.numbers = !self.numbers };
     }
 
     pub fn toggle_symbols ( &mut self )
     {
-        if self.symbols && self.active_count_check()
-        {
-            return;
-        }
-
-        self.symbols = !self.symbols;
+        if self.can_toggle (self.symbols) { self.symbols = !self.symbols };
     }
 
     pub fn get_pool ( &self ) -> String
