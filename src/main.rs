@@ -124,7 +124,7 @@ fn generate_password ( characters_settings: &Characters )
     
     for _ in 0 .. length
     {
-        print! ( "{}", chars [ rng.random_range ( 0 ..= chars.len () ) ] );
+        print! ( "{}", chars [ rng.random_range ( 0 .. chars.len () ) ] );
     }
 
     print! ( "\n" );
