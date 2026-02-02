@@ -1,5 +1,6 @@
 use text_io::read;
 use rand::prelude::*;
+// use std::process::Command;
 
 struct Characters
 {
@@ -20,45 +21,30 @@ impl Characters
 
         active_count == 1
     }
+
+    fn can_toggle ( &self, currently_on: bool ) -> bool
+    {
+        !( currently_on && self.active_count_check() )
+    }
     
     pub fn toggle_uppercase ( &mut self )
     {
-        if self.uppercase && self.active_count_check()
-        {
-            return;
-        }
-
-        self.uppercase = !self.uppercase;
+        if self.can_toggle (self.uppercase) { self.uppercase = !self.uppercase };
     }
 
     pub fn toggle_lowercase ( &mut self )
     {
-        if self.lowercase && self.active_count_check()
-        {
-            return;
-        }
-
-        self.lowercase = !self.lowercase;
+        if self.can_toggle (self.lowercase) { self.lowercase = !self.lowercase };
     }
 
     pub fn toggle_numbers ( &mut self )
     {
-        if self.numbers && self.active_count_check()
-        {
-            return;
-        }
-
-        self.numbers = !self.numbers;
+        if self.can_toggle (self.numbers) { self.numbers = !self.numbers };
     }
 
     pub fn toggle_symbols ( &mut self )
     {
-        if self.symbols && self.active_count_check()
-        {
-            return;
-        }
-
-        self.symbols = !self.symbols;
+        if self.can_toggle (self.symbols) { self.symbols = !self.symbols };
     }
 
     pub fn get_pool ( &self ) -> String
@@ -117,19 +103,36 @@ fn generate_password ( characters_settings: &Characters )
     println! ( "Generate Password" );
 
     print! ( "Password Length: " );
-    let length:usize = read! ();
+    let length_input:String = read! ();
+    let length: usize = length_input.trim().parse().unwrap_or ( 0 );
 
     let pool = characters_settings.get_pool ();
     let chars: Vec<char> = pool.chars ().collect ();
+    let mut result: String = String::new ();
     
-    for _ in 0 .. length
+    if length == 0
     {
-        print! ( "{}", chars [ rng.random_range ( 0 .. chars.len () ) ] );
+        result.push_str ( "Invalid Length!" );
+    }
+    
+    else
+    {
+        for _ in 0 .. length
+        {
+            result.push ( chars [ rng.random_range ( 0 .. chars.len () ) ] );
+        }
     }
 
-    print! ( "\n" );
+    println! ( "Result: {}", result );
+    println! ( "1. Re-generate Password" );
+    println! ( "2. Back" );
 
-    let _: i32 = read! ();
+    match read! ()
+    {
+        1 => generate_password ( characters_settings ),
+        2 => return,
+        _ => ()
+    }
 }
 
 fn setting_mode_select ( characters_settings: &mut Characters )
