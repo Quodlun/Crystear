@@ -142,7 +142,7 @@ fn generate_password ( characters_settings: &Characters ) -> Result<(), String>
         
         else
         {
-            let mut result: String = String::new ();
+            let mut result: String = String::with_capacity ( length );
 
             for _ in 0 .. length
             {
