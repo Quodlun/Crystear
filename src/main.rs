@@ -71,10 +71,10 @@ fn main ()
 {
     let mut characters_settings: Characters = Characters
     {
-        uppercase: false,
-        lowercase: false,
-        numbers: false,
-        symbols: false,
+        uppercase: true,
+        lowercase: true,
+        numbers: true,
+        symbols: true,
     };
 
     main_page_mode_select ( &mut characters_settings );
@@ -82,74 +82,88 @@ fn main ()
 
 fn main_page_mode_select ( characters_settings: &mut Characters )
 {
+    let mut greeting_message = String::from ( "Welcome to Crystear" );
+    
     loop
     {
         clear_screen ();
-        println! ( "Welcome To Crystear." );
+        println! ( "{}", greeting_message );
         println! ( "1. Generate Password" );
         println! ( "2. Settings" );
         println! ( "3. Exit" );
 
         match read! ()
         {
-            1 => generate_password ( characters_settings ),
-            2 => setting_mode_select ( characters_settings ),
+            1 => 
+            {
+                match generate_password ( characters_settings )
+                {
+                    Ok ( _ ) => greeting_message = String::from("Welcome to Crystear"),
+                    Err ( e ) => greeting_message = e,
+                }
+
+                continue;
+            }
+            2 =>
+            {
+                setting_mode_select ( characters_settings );
+                greeting_message = String::from("Welcome to Crystear");
+            }
             3 => return,
             _ => ()
         }
     }
 }
 
-fn generate_password ( characters_settings: &Characters )
+fn generate_password ( characters_settings: &Characters ) -> Result<(), String>
 {
     let pool = characters_settings.get_pool ();
     let chars: Vec<char> = pool.chars ().collect ();
 
     if chars.is_empty ()
     {
-        println! ( "[ERROR] No Characters Selected!" );
+        return Err ( String::from ( "Warning! No Characters Selected! Please select characters in [Settings]" ) );
     }
 
-    else
+    loop
     {
-        loop
+        let mut rng = rand::rng ();
+        clear_screen ();
+        println! ( "Generate Password" );
+
+        print! ( "Password Length: " );
+        let length_input:String = read! ();
+        let length: usize = length_input.trim().parse().unwrap_or ( 0 );
+        
+        if length == 0
         {
-            let mut rng = rand::rng ();
-            clear_screen ();
-            println! ( "Generate Password" );
+            println! ( "Invalid Length!" );
+        }
+        
+        else
+        {
+            let mut result: String = String::new ();
 
-            print! ( "Password Length: " );
-            let length_input:String = read! ();
-            let length: usize = length_input.trim().parse().unwrap_or ( 0 );
-            
-            if length == 0
+            for _ in 0 .. length
             {
-                println! ( "Invalid Length!" );
-            }
-            
-            else
-            {
-                let mut result: String = String::new ();
-
-                for _ in 0 .. length
-                {
-                    result.push ( chars [ rng.random_range ( 0 .. chars.len () ) ] );
-                }
-
-                println! ( "Result: {}", result );
+                result.push ( chars [ rng.random_range ( 0 .. chars.len () ) ] );
             }
 
-            println! ( "1. Re-generate Password" );
-            println! ( "2. Back" );
+            println! ( "Result: {}", result );
+        }
 
-            match read! ()
-            {
-                1 => continue,
-                2 => break,
-                _ => ()
-            }
+        println! ( "1. Re-generate Password" );
+        println! ( "2. Back" );
+
+        match read! ()
+        {
+            1 => continue,
+            2 => break,
+            _ => ()
         }
     }
+
+    return  Ok (());
 }
 
 fn setting_mode_select ( characters_settings: &mut Characters )
