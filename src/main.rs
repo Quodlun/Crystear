@@ -99,7 +99,7 @@ fn main_page_mode_select ( characters_settings: &mut Characters )
 fn generate_password ( characters_settings: &Characters )
 {
     let mut rng = rand::rng ();
-    print! ( "\x1B[2J\x1B[H" );
+    print! ( "clear_screen ();" );
     println! ( "Generate Password" );
 
     print! ( "Password Length: " );
