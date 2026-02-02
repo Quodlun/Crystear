@@ -1,6 +1,11 @@
 use text_io::read;
 use rand::prelude::*;
 
+const UPPERCASE: &str = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+const LOWERCASE: &str = "abcdefghijklmnopqrstuvwxyz";
+const NUMBERS: &str = "0123456789";
+const SYMBOLS: &str = "!@#$%^&*()-_=+[]{}|;:',.<>?/`~";
+
 enum CharType
 {
     Uppercase,
@@ -51,13 +56,12 @@ impl Characters
     {
         let mut pool = String::new();
 
-        if self.uppercase { pool.push_str ( "ABCDEFGHIJKLMNOPQRSTUVWXYZ" ); }
+        if self.uppercase { pool.push_str ( UPPERCASE ); }
 
-        if self.lowercase { pool.push_str ( "abcdefghijklmnopqrstuvwxyz" ); }
+        if self.lowercase { pool.push_str ( LOWERCASE ); }
 
-        if self.numbers { pool.push_str ( "0123456789" ); }
-
-        if self.symbols { pool.push_str ( "!@#$%^&*()-_=+[]{}|;:',.<>?/`~" ); }
+        if self.numbers { pool.push_str ( NUMBERS ); }
+        if self.symbols { pool.push_str ( SYMBOLS ); }
 
         pool
     }
@@ -98,51 +102,54 @@ fn main_page_mode_select ( characters_settings: &mut Characters )
 
 fn generate_password ( characters_settings: &Characters )
 {
-    let mut rng = rand::rng ();
-    print! ( "clear_screen ();" );
-    println! ( "Generate Password" );
+    loop
+    {
+        let mut rng = rand::rng ();
+        clear_screen ();
+        println! ( "Generate Password" );
 
-    print! ( "Password Length: " );
-    let length_input:String = read! ();
-    let length: usize = length_input.trim().parse().unwrap_or ( 0 );
-    
-    if length == 0
-    {
-        println! ( "Invalid Length!" );
-    }
-    
-    else
-    {
-        let pool = characters_settings.get_pool ();
-        let chars: Vec<char> = pool.chars ().collect ();
+        print! ( "Password Length: " );
+        let length_input:String = read! ();
+        let length: usize = length_input.trim().parse().unwrap_or ( 0 );
         
-        if chars.is_empty ()
+        if length == 0
         {
-            println! ( "[ERROR] No Characters Selected!" );
-            return;
+            println! ( "Invalid Length!" );
         }
-
+        
         else
         {
-            let mut result: String = String::new ();
-
-            for _ in 0 .. length
+            let pool = characters_settings.get_pool ();
+            let chars: Vec<char> = pool.chars ().collect ();
+            
+            if chars.is_empty ()
             {
-                result.push ( chars [ rng.random_range ( 0 .. chars.len () ) ] );
+                println! ( "[ERROR] No Characters Selected!" );
+                return;
             }
 
-            println! ( "Result: {}", result );
+            else
+            {
+                let mut result: String = String::new ();
+
+                for _ in 0 .. length
+                {
+                    result.push ( chars [ rng.random_range ( 0 .. chars.len () ) ] );
+                }
+
+                println! ( "Result: {}", result );
+            }
         }
-    }
 
-    println! ( "1. Re-generate Password" );
-    println! ( "2. Back" );
+        println! ( "1. Re-generate Password" );
+        println! ( "2. Back" );
 
-    match read! ()
-    {
-        1 => generate_password ( characters_settings ),
-        2 => return,
-        _ => ()
+        match read! ()
+        {
+            1 => continue,
+            2 => break,
+            _ => ()
+        }
     }
 }
 
