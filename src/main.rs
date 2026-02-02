@@ -1,6 +1,18 @@
 use text_io::read;
 use rand::prelude::*;
-// use std::process::Command;
+
+const UPPERCASE: &str = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+const LOWERCASE: &str = "abcdefghijklmnopqrstuvwxyz";
+const NUMBERS: &str = "0123456789";
+const SYMBOLS: &str = "!@#$%^&*()-_=+[]{}|;:',.<>?/`~";
+
+enum CharType
+{
+    Uppercase,
+    Lowercase,
+    Numbers,
+    Symbols,
+}
 
 struct Characters
 {
@@ -12,6 +24,24 @@ struct Characters
 
 impl Characters
 {
+    pub fn toggle ( &mut self, t: CharType )
+    {
+        let is_last_one = self.active_count_check();
+
+        let field = match t
+        {
+            CharType::Uppercase => &mut self.uppercase,
+            CharType::Lowercase => &mut self.lowercase,
+            CharType::Numbers => &mut self.numbers,
+            CharType::Symbols => &mut self.symbols,
+        };
+
+        if !*field || !is_last_one
+        {
+            *field = !*field;
+        }
+    }
+
     fn active_count_check ( &self ) -> bool
     {
         let active_count = [ self.uppercase, self.lowercase, self.numbers, self.symbols ]
@@ -22,42 +52,16 @@ impl Characters
         active_count == 1
     }
 
-    fn can_toggle ( &self, currently_on: bool ) -> bool
-    {
-        !( currently_on && self.active_count_check() )
-    }
-    
-    pub fn toggle_uppercase ( &mut self )
-    {
-        if self.can_toggle (self.uppercase) { self.uppercase = !self.uppercase };
-    }
-
-    pub fn toggle_lowercase ( &mut self )
-    {
-        if self.can_toggle (self.lowercase) { self.lowercase = !self.lowercase };
-    }
-
-    pub fn toggle_numbers ( &mut self )
-    {
-        if self.can_toggle (self.numbers) { self.numbers = !self.numbers };
-    }
-
-    pub fn toggle_symbols ( &mut self )
-    {
-        if self.can_toggle (self.symbols) { self.symbols = !self.symbols };
-    }
-
     pub fn get_pool ( &self ) -> String
     {
         let mut pool = String::new();
 
-        if self.uppercase { pool.push_str ( "ABCDEFGHIJKLMNOPQRSTUVWXYZ" ); }
+        if self.uppercase { pool.push_str ( UPPERCASE ); }
 
-        if self.lowercase { pool.push_str ( "abcdefghijklmnopqrstuvwxyz" ); }
+        if self.lowercase { pool.push_str ( LOWERCASE ); }
 
-        if self.numbers { pool.push_str ( "0123456789" ); }
-
-        if self.symbols { pool.push_str ( "!@#$%^&*()-_=+[]{}|;:',.<>?/`~" ); }
+        if self.numbers { pool.push_str ( NUMBERS ); }
+        if self.symbols { pool.push_str ( SYMBOLS ); }
 
         pool
     }
@@ -78,68 +82,95 @@ fn main ()
 
 fn main_page_mode_select ( characters_settings: &mut Characters )
 {
+    let mut greeting_message = String::from ( "Welcome to Crystear" );
+    
     loop
     {
-        print!("\x1B[2J\x1B[H");
-        println! ( "Welcome To Crystear." );
+        clear_screen ();
+        println! ( "{}", greeting_message );
         println! ( "1. Generate Password" );
         println! ( "2. Settings" );
         println! ( "3. Exit" );
 
         match read! ()
         {
-            1 => generate_password ( characters_settings ),
-            2 => setting_mode_select ( characters_settings ),
+            1 => 
+            {
+                match generate_password ( characters_settings )
+                {
+                    Ok ( _ ) => greeting_message = String::from("Welcome to Crystear"),
+                    Err ( e ) => greeting_message = e,
+                }
+
+                continue;
+            }
+            2 =>
+            {
+                setting_mode_select ( characters_settings );
+                greeting_message = String::from("Welcome to Crystear");
+            }
             3 => return,
             _ => ()
         }
     }
 }
 
-fn generate_password ( characters_settings: &Characters )
+fn generate_password ( characters_settings: &Characters ) -> Result<(), String>
 {
-    let mut rng = rand::rng ();
-    print! ( "\x1B[2J\x1B[H" );
-    println! ( "Generate Password" );
-
-    print! ( "Password Length: " );
-    let length_input:String = read! ();
-    let length: usize = length_input.trim().parse().unwrap_or ( 0 );
-
     let pool = characters_settings.get_pool ();
     let chars: Vec<char> = pool.chars ().collect ();
-    let mut result: String = String::new ();
-    
-    if length == 0
+
+    if chars.is_empty ()
     {
-        result.push_str ( "Invalid Length!" );
+        return Err ( String::from ( "Warning! No Characters Selected! Please select characters in [Settings]" ) );
     }
-    
-    else
+
+    loop
     {
-        for _ in 0 .. length
+        let mut rng = rand::rng ();
+        clear_screen ();
+        println! ( "Generate Password" );
+
+        print! ( "Password Length: " );
+        let length_input:String = read! ();
+        let length: usize = length_input.trim().parse().unwrap_or ( 0 );
+        
+        if length == 0
         {
-            result.push ( chars [ rng.random_range ( 0 .. chars.len () ) ] );
+            println! ( "Invalid Length!" );
+        }
+        
+        else
+        {
+            let mut result: String = String::new ();
+
+            for _ in 0 .. length
+            {
+                result.push ( chars [ rng.random_range ( 0 .. chars.len () ) ] );
+            }
+
+            println! ( "Result: {}", result );
+        }
+
+        println! ( "1. Re-generate Password" );
+        println! ( "2. Back" );
+
+        match read! ()
+        {
+            1 => continue,
+            2 => break,
+            _ => ()
         }
     }
 
-    println! ( "Result: {}", result );
-    println! ( "1. Re-generate Password" );
-    println! ( "2. Back" );
-
-    match read! ()
-    {
-        1 => generate_password ( characters_settings ),
-        2 => return,
-        _ => ()
-    }
+    return  Ok (());
 }
 
 fn setting_mode_select ( characters_settings: &mut Characters )
 {
     loop
     {
-        print!("\x1B[2J\x1B[H");
+        clear_screen ();
         println! ( "Settings Menu:" );
         println! ( "1. Using Characters" );
         println! ( "2. Back" );
@@ -157,7 +188,7 @@ fn using_characters ( characters_settings: &mut Characters )
 {
     loop
     {
-        print!("\x1B[2J\x1B[H");
+        clear_screen ();
         println! ( "Character Settings: (Select Numbers To Change " );
         println!("Character Settings: (Select Numbers To Toggle)");
         println!("1. [ {} ] Uppercase Letters", if characters_settings.uppercase { "V" } else { " " });
@@ -168,12 +199,17 @@ fn using_characters ( characters_settings: &mut Characters )
 
         match  read! ()
         {
-            1 => characters_settings.toggle_uppercase (),
-            2 => characters_settings.toggle_lowercase (),
-            3 => characters_settings.toggle_numbers (),
-            4 => characters_settings.toggle_symbols (),
+            1 => characters_settings.toggle ( CharType::Uppercase ),
+            2 => characters_settings.toggle ( CharType::Lowercase ),
+            3 => characters_settings.toggle ( CharType::Numbers ),
+            4 => characters_settings.toggle ( CharType::Symbols ),
             5 => return,
             _ => (),
         }
     }
+}
+
+fn clear_screen ()
+{
+    print!("\x1B[2J\x1B[H");
 }
