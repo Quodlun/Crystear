@@ -1,5 +1,6 @@
 use text_io::read;
 use rand::prelude::*;
+// use std::process::Command;
 
 struct Characters
 {
@@ -122,8 +123,16 @@ fn generate_password ( characters_settings: &Characters )
         }
     }
 
-    println! ( "{}", result );
-    let _: String = read! ( "\n{}" );
+    println! ( "Result: {}", result );
+    println! ( "1. Re-generate Password" );
+    println! ( "2. Back" );
+
+    match read! ()
+    {
+        1 => generate_password ( characters_settings ),
+        2 => return,
+        _ => ()
+    }
 }
 
 fn setting_mode_select ( characters_settings: &mut Characters )
