@@ -173,7 +173,6 @@ fn using_characters(characters_settings: &mut Characters) {
 
     loop {
         clear_screen();
-        println!("Character Settings: (Select Numbers To Change ");
         println!("Character Settings: (Select Numbers To Toggle)");
         println!(
             "1. [ {} ] Uppercase Letters",
