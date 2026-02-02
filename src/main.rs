@@ -71,10 +71,10 @@ fn main ()
 {
     let mut characters_settings: Characters = Characters
     {
-        uppercase: true,
-        lowercase: true,
-        numbers: true,
-        symbols: true,
+        uppercase: false,
+        lowercase: false,
+        numbers: false,
+        symbols: false,
     };
 
     main_page_mode_select ( &mut characters_settings );
@@ -102,32 +102,31 @@ fn main_page_mode_select ( characters_settings: &mut Characters )
 
 fn generate_password ( characters_settings: &Characters )
 {
-    loop
+    let pool = characters_settings.get_pool ();
+    let chars: Vec<char> = pool.chars ().collect ();
+
+    if chars.is_empty ()
     {
-        let mut rng = rand::rng ();
-        clear_screen ();
-        println! ( "Generate Password" );
+        println! ( "[ERROR] No Characters Selected!" );
+    }
 
-        print! ( "Password Length: " );
-        let length_input:String = read! ();
-        let length: usize = length_input.trim().parse().unwrap_or ( 0 );
-        
-        if length == 0
+    else
+    {
+        loop
         {
-            println! ( "Invalid Length!" );
-        }
-        
-        else
-        {
-            let pool = characters_settings.get_pool ();
-            let chars: Vec<char> = pool.chars ().collect ();
+            let mut rng = rand::rng ();
+            clear_screen ();
+            println! ( "Generate Password" );
+
+            print! ( "Password Length: " );
+            let length_input:String = read! ();
+            let length: usize = length_input.trim().parse().unwrap_or ( 0 );
             
-            if chars.is_empty ()
+            if length == 0
             {
-                println! ( "[ERROR] No Characters Selected!" );
-                return;
+                println! ( "Invalid Length!" );
             }
-
+            
             else
             {
                 let mut result: String = String::new ();
@@ -139,16 +138,16 @@ fn generate_password ( characters_settings: &Characters )
 
                 println! ( "Result: {}", result );
             }
-        }
 
-        println! ( "1. Re-generate Password" );
-        println! ( "2. Back" );
+            println! ( "1. Re-generate Password" );
+            println! ( "2. Back" );
 
-        match read! ()
-        {
-            1 => continue,
-            2 => break,
-            _ => ()
+            match read! ()
+            {
+                1 => continue,
+                2 => break,
+                _ => ()
+            }
         }
     }
 }
