@@ -102,15 +102,24 @@ fn generate_password ( characters_settings: &Characters )
     println! ( "Generate Password" );
 
     print! ( "Password Length: " );
-    let length:usize = read! ();
+    let length_input:String = read! ();
+    let length: usize = length_input.trim().parse().unwrap_or ( 0 );
 
     let pool = characters_settings.get_pool ();
     let chars: Vec<char> = pool.chars ().collect ();
     let mut result: String = String::new ();
     
-    for _ in 0 .. length
+    if length == 0
     {
-        result.push ( chars [ rng.random_range ( 0 .. chars.len () ) ] );
+        result.push_str ( "Invalid Length!" );
+    }
+    
+    else
+    {
+        for _ in 0 .. length
+        {
+            result.push ( chars [ rng.random_range ( 0 .. chars.len () ) ] );
+        }
     }
 
     println! ( "{}", result );
