@@ -1,6 +1,13 @@
 use text_io::read;
 use rand::prelude::*;
-// use std::process::Command;
+
+enum CharType
+{
+    Uppercase,
+    Lowercase,
+    Numbers,
+    Symbols,
+}
 
 struct Characters
 {
@@ -12,6 +19,24 @@ struct Characters
 
 impl Characters
 {
+    pub fn toggle ( &mut self, t: CharType )
+    {
+        let is_last_one = self.active_count_check();
+
+        let field = match t
+        {
+            CharType::Uppercase => &mut self.uppercase,
+            CharType::Lowercase => &mut self.lowercase,
+            CharType::Numbers => &mut self.numbers,
+            CharType::Symbols => &mut self.symbols,
+        };
+
+        if !*field || !is_last_one
+        {
+            *field = !*field;
+        }
+    }
+
     fn active_count_check ( &self ) -> bool
     {
         let active_count = [ self.uppercase, self.lowercase, self.numbers, self.symbols ]
@@ -20,31 +45,6 @@ impl Characters
             .count();   
 
         active_count == 1
-    }
-
-    fn can_toggle ( &self, currently_on: bool ) -> bool
-    {
-        !( currently_on && self.active_count_check() )
-    }
-    
-    pub fn toggle_uppercase ( &mut self )
-    {
-        if self.can_toggle (self.uppercase) { self.uppercase = !self.uppercase };
-    }
-
-    pub fn toggle_lowercase ( &mut self )
-    {
-        if self.can_toggle (self.lowercase) { self.lowercase = !self.lowercase };
-    }
-
-    pub fn toggle_numbers ( &mut self )
-    {
-        if self.can_toggle (self.numbers) { self.numbers = !self.numbers };
-    }
-
-    pub fn toggle_symbols ( &mut self )
-    {
-        if self.can_toggle (self.symbols) { self.symbols = !self.symbols };
     }
 
     pub fn get_pool ( &self ) -> String
@@ -168,10 +168,10 @@ fn using_characters ( characters_settings: &mut Characters )
 
         match  read! ()
         {
-            1 => characters_settings.toggle_uppercase (),
-            2 => characters_settings.toggle_lowercase (),
-            3 => characters_settings.toggle_numbers (),
-            4 => characters_settings.toggle_symbols (),
+            1 => characters_settings.toggle ( CharType::Uppercase ),
+            2 => characters_settings.toggle ( CharType::Lowercase ),
+            3 => characters_settings.toggle ( CharType::Numbers ),
+            4 => characters_settings.toggle ( CharType::Symbols ),
             5 => return,
             _ => (),
         }
