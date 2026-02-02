@@ -80,7 +80,7 @@ fn main_page_mode_select ( characters_settings: &mut Characters )
 {
     loop
     {
-        print!("\x1B[2J\x1B[H");
+        clear_screen ();
         println! ( "Welcome To Crystear." );
         println! ( "1. Generate Password" );
         println! ( "2. Settings" );
@@ -150,7 +150,7 @@ fn setting_mode_select ( characters_settings: &mut Characters )
 {
     loop
     {
-        print!("\x1B[2J\x1B[H");
+        clear_screen ();
         println! ( "Settings Menu:" );
         println! ( "1. Using Characters" );
         println! ( "2. Back" );
@@ -168,7 +168,7 @@ fn using_characters ( characters_settings: &mut Characters )
 {
     loop
     {
-        print!("\x1B[2J\x1B[H");
+        clear_screen ();
         println! ( "Character Settings: (Select Numbers To Change " );
         println!("Character Settings: (Select Numbers To Toggle)");
         println!("1. [ {} ] Uppercase Letters", if characters_settings.uppercase { "V" } else { " " });
@@ -187,4 +187,9 @@ fn using_characters ( characters_settings: &mut Characters )
             _ => (),
         }
     }
+}
+
+fn clear_screen ()
+{
+    print!("\x1B[2J\x1B[H");
 }
