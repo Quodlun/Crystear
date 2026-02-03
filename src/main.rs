@@ -75,10 +75,10 @@ fn main() {
         symbols: true,
     };
 
-    main_page_mode_select(&mut characters_settings);
+    main_menu(&mut characters_settings);
 }
 
-fn main_page_mode_select(characters_settings: &mut Characters) {
+fn main_menu(characters_settings: &mut Characters) {
     const GREETING_MESSAGE: &str = "Welcome to Crystear";
     let mut title_message = String::from(GREETING_MESSAGE);
 
@@ -102,7 +102,7 @@ fn main_page_mode_select(characters_settings: &mut Characters) {
                 continue;
             }
             2 => {
-                setting_mode_select(characters_settings);
+                setting_menu(characters_settings);
                 title_message = String::from(GREETING_MESSAGE);
             }
             3 => return,
@@ -163,7 +163,7 @@ fn generate_password(characters_settings: &Characters) -> Result<(), String> {
     Ok(())
 }
 
-fn setting_mode_select(characters_settings: &mut Characters) {
+fn setting_menu(characters_settings: &mut Characters) {
     loop {
         clear_screen();
         println!("Settings Menu:");
