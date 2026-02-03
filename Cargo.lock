@@ -6,6 +6,7 @@ version = 4
 name = "Crystear"
 version = "0.1.2"
 dependencies = [
+ "crystear-core",
  "rand",
  "text_io",
 ]
