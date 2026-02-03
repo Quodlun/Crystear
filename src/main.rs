@@ -89,7 +89,10 @@ fn main_page_mode_select(characters_settings: &mut Characters) {
         println!("2. Settings");
         println!("3. Exit");
 
-        match read!() {
+        let main_menu_input: String = read!();
+        let main_menu_select: usize = main_menu_input.trim().parse().unwrap_or(0);
+
+        match main_menu_select {
             1 => {
                 match generate_password(characters_settings) {
                     Ok(_) => title_message = String::from(GREETING_MESSAGE),
@@ -103,7 +106,11 @@ fn main_page_mode_select(characters_settings: &mut Characters) {
                 title_message = String::from(GREETING_MESSAGE);
             }
             3 => return,
-            _ => (),
+            _ => {
+                title_message = String::from("Invalid input, please type in numbers to select.");
+
+                continue;
+            }
         }
     }
 }
@@ -127,8 +134,7 @@ fn generate_password(characters_settings: &Characters) -> Result<(), String> {
         print!("Password Length: ");
         let length_input: String = read!();
 
-        match length_check(&length_input)
-        {
+        match length_check(&length_input) {
             Ok(length) => {
                 let mut result: String = String::with_capacity(length);
 
@@ -139,9 +145,8 @@ fn generate_password(characters_settings: &Characters) -> Result<(), String> {
                 println!("Result: {}", result);
             }
 
-            Err ( e ) =>
-            {
-                println! ( "Someting went wrong: {}", e );
+            Err(e) => {
+                println!("Someting went wrong: {}", e);
             }
         }
 
@@ -206,14 +211,15 @@ fn clear_screen() {
     print!("\x1B[2J\x1B[H");
 }
 
-fn length_check ( input: &str ) -> Result < usize, String >
-{
-    let length: usize = input.trim ().parse::< usize > (). map_err (| _ | String :: from ( "Please enter a valid number." ) ) ? ;
-    
-    if length == 0 || length > 100
-    {
-        return Err ( String :: from ( "Length must be between 0 and 100." ) );
+fn length_check(input: &str) -> Result<usize, String> {
+    let length: usize = input
+        .trim()
+        .parse::<usize>()
+        .map_err(|_| String::from("Please enter a valid number."))?;
+
+    if length == 0 || length > 100 {
+        return Err(String::from("Length must be between 0 and 100."));
     }
 
-    Ok ( length )
+    Ok(length)
 }
