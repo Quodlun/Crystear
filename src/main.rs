@@ -126,18 +126,23 @@ fn generate_password(characters_settings: &Characters) -> Result<(), String> {
 
         print!("Password Length: ");
         let length_input: String = read!();
-        let length: usize = length_input.trim().parse().unwrap_or(0);
 
-        if length == 0 {
-            println!("Invalid Length!");
-        } else {
-            let mut result: String = String::with_capacity(length);
+        match length_check(&length_input)
+        {
+            Ok(length) => {
+                let mut result: String = String::with_capacity(length);
 
-            for _ in 0..length {
-                result.push(chars[rng.random_range(0..chars.len())]);
+                for _ in 0..length {
+                    result.push(chars[rng.random_range(0..chars.len())]);
+                }
+
+                println!("Result: {}", result);
             }
 
-            println!("Result: {}", result);
+            Err ( e ) =>
+            {
+                println! ( "Someting went wrong: {}", e );
+            }
         }
 
         println!("1. Re-generate Password");
@@ -199,4 +204,16 @@ fn using_characters(characters_settings: &mut Characters) {
 
 fn clear_screen() {
     print!("\x1B[2J\x1B[H");
+}
+
+fn length_check ( input: &str ) -> Result < usize, String >
+{
+    let length: usize = input.trim ().parse::< usize > (). map_err (| _ | String :: from ( "Please enter a valid number." ) ) ? ;
+    
+    if length == 0 || length > 100
+    {
+        return Err ( String :: from ( "Length must be between 0 and 100." ) );
+    }
+
+    Ok ( length )
 }
