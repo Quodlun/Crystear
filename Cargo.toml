@@ -9,7 +9,7 @@ text_io = "0.1.13"
 crystear-core = { path = "crystear-core" }
 
 [workspace]
-members = [
+members = ["crystear-cli",
     "crystear-core",
 ]
 resolve = "2"
