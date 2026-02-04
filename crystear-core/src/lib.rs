@@ -11,10 +11,10 @@ pub enum CharType {
 }
 
 pub struct Characters {
-    uppercase: bool,
-    lowercase: bool,
-    numbers: bool,
-    symbols: bool,
+    pub uppercase: bool,
+    pub lowercase: bool,
+    pub numbers: bool,
+    pub symbols: bool,
 }
 
 impl Characters {

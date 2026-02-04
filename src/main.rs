@@ -81,7 +81,7 @@ fn generate_password(characters_settings: &Characters) -> Result<(), String> {
             }
 
             Err(e) => {
-                println!("Someting went wrong: {}", e);
+                println!("Something went wrong: {}", e);
             }
         }
 
