@@ -1,6 +1,6 @@
+use crystear_core::{CharType, Characters};
 use rand::prelude::*;
 use text_io::read;
-use crystear_core::{CharType, Characters};
 
 fn main() {
     let mut characters_settings: Characters = Characters {
