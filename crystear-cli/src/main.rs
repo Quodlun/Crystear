@@ -1,9 +1,9 @@
-use crystear_core::{CharType, Characters};
+use crystear_core::{CharType, GeneratorOption};
 use rand::prelude::*;
 use text_io::read;
 
 fn main() {
-    let mut characters_settings: Characters = Characters {
+    let mut characters_settings: GeneratorOption = GeneratorOption {
         uppercase: true,
         lowercase: true,
         numbers: true,
@@ -13,7 +13,7 @@ fn main() {
     main_menu(&mut characters_settings);
 }
 
-fn main_menu(characters_settings: &mut Characters) {
+fn main_menu(characters_settings: &mut GeneratorOption) {
     const GREETING_MESSAGE: &str = "Welcome to Crystear";
     let mut title_message = String::from(GREETING_MESSAGE);
 
@@ -50,7 +50,7 @@ fn main_menu(characters_settings: &mut Characters) {
     }
 }
 
-fn generate_password(characters_settings: &Characters) -> Result<(), String> {
+fn generate_password(characters_settings: &GeneratorOption) -> Result<(), String> {
     let pool = characters_settings.get_pool();
     let chars: Vec<char> = pool.chars().collect();
 
@@ -69,7 +69,7 @@ fn generate_password(characters_settings: &Characters) -> Result<(), String> {
         print!("Password Length: ");
         let length_input: String = read!();
 
-        match length_check(&length_input) {
+        match GeneratorOption::length_check(&length_input) {
             Ok(length) => {
                 let mut result: String = String::with_capacity(length);
 
@@ -98,7 +98,7 @@ fn generate_password(characters_settings: &Characters) -> Result<(), String> {
     Ok(())
 }
 
-fn setting_menu(characters_settings: &mut Characters) {
+fn setting_menu(characters_settings: &mut GeneratorOption) {
     loop {
         clear_screen();
         println!("Settings Menu:");
@@ -113,7 +113,7 @@ fn setting_menu(characters_settings: &mut Characters) {
     }
 }
 
-fn using_characters(characters_settings: &mut Characters) {
+fn using_characters(characters_settings: &mut GeneratorOption) {
     let check_mark = |status: bool| if status { "V" } else { " " };
 
     loop {
@@ -144,17 +144,4 @@ fn using_characters(characters_settings: &mut Characters) {
 
 fn clear_screen() {
     print!("\x1B[2J\x1B[H");
-}
-
-fn length_check(input: &str) -> Result<usize, String> {
-    let length: usize = input
-        .trim()
-        .parse::<usize>()
-        .map_err(|_| String::from("Please enter a valid number."))?;
-
-    if length == 0 || length > 100 {
-        return Err(String::from("Length must be between 1 and 100."));
-    }
-
-    Ok(length)
 }

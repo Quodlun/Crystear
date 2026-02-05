@@ -1,3 +1,5 @@
+// use std::string;
+
 pub const UPPERCASE: &str = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 pub const LOWERCASE: &str = "abcdefghijklmnopqrstuvwxyz";
 pub const NUMBERS: &str = "0123456789";
@@ -10,14 +12,14 @@ pub enum CharType {
     Symbols,
 }
 
-pub struct Characters {
+pub struct GeneratorOption {
     pub uppercase: bool,
     pub lowercase: bool,
     pub numbers: bool,
     pub symbols: bool,
 }
 
-impl Characters {
+impl GeneratorOption {
     pub fn new(uppercase: bool, lowercase: bool, numbers: bool, symbols: bool) -> Self {
         Self {
             uppercase,
@@ -70,5 +72,27 @@ impl Characters {
         }
 
         pool
+    }
+
+    /*/
+    pub fn generator ( &self, chars: Vec<char>, length_input: String ) -> Result < String, String >
+    {
+        let mut rng = rand::rng();
+
+
+    }
+    */
+
+    pub fn length_check(input: &str) -> Result<usize, String> {
+        let length: usize = input
+            .trim()
+            .parse::<usize>()
+            .map_err(|_| String::from("Please enter a valid number."))?;
+
+        if length == 0 || length > 100 {
+            return Err(String::from("Length must be between 1 and 100."));
+        }
+
+        Ok(length)
     }
 }
