@@ -71,7 +71,7 @@ fn generate_password(characters_settings: &GeneratorOption) -> Result<(), String
                 match GeneratorOption::generator(characters_settings, chars.clone(), length)
                 {
                     Ok (result) => println!("Result: {}", result),
-                    Err(()) => println!("Something went wrong while generating password."),
+                    Err( e ) => return Err ( e ),
                 }                
             }
 

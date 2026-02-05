@@ -75,19 +75,21 @@ impl GeneratorOption {
         pool
     }
 
-    
-    pub fn generator ( &self, chars: Vec<char>, length: usize ) -> Result < String, () >
-    {
+    pub fn generator(&self, chars: Vec<char>, length: usize) -> Result<String, String> {
         let mut rng = rand::rng();
 
-        let mut result: String = String::with_capacity(length);
-
-        for _ in 0..length {
-            result.push(chars[rng.random_range(0..chars.len())]);
+        if chars.is_empty() {
+            return Err(String::from("Warning! No Characters Selected! Please select characters in [Settings]"));
         }
 
-        Ok ( result )
+        let result: String = (0..length)
+            .map(|_| {
+                let idx = rng.random_range(0..chars.len());
+                chars[idx]
+            })
+            .collect();
 
+        Ok(result)
     }
 
     pub fn length_check(input: &str) -> Result<usize, String> {
