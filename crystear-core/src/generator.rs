@@ -1,3 +1,4 @@
+use rand::prelude::*;
 // use std::string;
 
 pub const UPPERCASE: &str = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -74,14 +75,20 @@ impl GeneratorOption {
         pool
     }
 
-    /*/
-    pub fn generator ( &self, chars: Vec<char>, length_input: String ) -> Result < String, String >
+    
+    pub fn generator ( &self, chars: Vec<char>, length: usize ) -> Result < String, () >
     {
         let mut rng = rand::rng();
 
+        let mut result: String = String::with_capacity(length);
+
+        for _ in 0..length {
+            result.push(chars[rng.random_range(0..chars.len())]);
+        }
+
+        Ok ( result )
 
     }
-    */
 
     pub fn length_check(input: &str) -> Result<usize, String> {
         let length: usize = input

@@ -1,5 +1,4 @@
 use crystear_core::{CharType, GeneratorOption};
-use rand::prelude::*;
 use text_io::read;
 
 fn main() {
@@ -60,8 +59,6 @@ fn generate_password(characters_settings: &GeneratorOption) -> Result<(), String
         ));
     }
 
-    let mut rng = rand::rng();
-
     loop {
         clear_screen();
         println!("Generate Password");
@@ -71,13 +68,11 @@ fn generate_password(characters_settings: &GeneratorOption) -> Result<(), String
 
         match GeneratorOption::length_check(&length_input) {
             Ok(length) => {
-                let mut result: String = String::with_capacity(length);
-
-                for _ in 0..length {
-                    result.push(chars[rng.random_range(0..chars.len())]);
-                }
-
-                println!("Result: {}", result);
+                match GeneratorOption::generator(characters_settings, chars.clone(), length)
+                {
+                    Ok (result) => println!("Result: {}", result),
+                    Err(()) => println!("Something went wrong while generating password."),
+                }                
             }
 
             Err(e) => {
