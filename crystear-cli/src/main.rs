@@ -1,18 +1,18 @@
-use crystear_core::{CharType, GeneratorOption};
+use crystear_core::{CharType, GeneratorOptions};
 use text_io::read;
 
 fn main() {
-    let mut characters_settings: GeneratorOption = GeneratorOption {
-        uppercase: true,
-        lowercase: true,
-        numbers: true,
-        symbols: true,
+    let mut characters_settings: GeneratorOptions = GeneratorOptions {
+        uppercase: false,
+        lowercase: false,
+        numbers: false,
+        symbols: false,
     };
 
     main_menu(&mut characters_settings);
 }
 
-fn main_menu(characters_settings: &mut GeneratorOption) {
+fn main_menu(characters_settings: &mut GeneratorOptions) {
     const GREETING_MESSAGE: &str = "Welcome to Crystear";
     let mut title_message = String::from(GREETING_MESSAGE);
 
@@ -49,16 +49,7 @@ fn main_menu(characters_settings: &mut GeneratorOption) {
     }
 }
 
-fn generate_password(characters_settings: &GeneratorOption) -> Result<(), String> {
-    let pool = characters_settings.get_pool();
-    let chars: Vec<char> = pool.chars().collect();
-
-    if chars.is_empty() {
-        return Err(String::from(
-            "Warning! No Characters Selected! Please select characters in [Settings]",
-        ));
-    }
-
+fn generate_password(characters_settings: &GeneratorOptions) -> Result<(), String> {
     loop {
         clear_screen();
         println!("Generate Password");
@@ -66,14 +57,11 @@ fn generate_password(characters_settings: &GeneratorOption) -> Result<(), String
         print!("Password Length: ");
         let length_input: String = read!();
 
-        match GeneratorOption::length_check(&length_input) {
-            Ok(length) => {
-                match GeneratorOption::generator(characters_settings, chars.clone(), length)
-                {
-                    Ok (result) => println!("Result: {}", result),
-                    Err( e ) => return Err ( e ),
-                }                
-            }
+        match GeneratorOptions::length_check(&length_input) {
+            Ok(length) => match characters_settings.generator(length) {
+                Ok(result) => println!("Result: {}", result),
+                Err(e) => return Err(e),
+            },
 
             Err(e) => {
                 println!("Something went wrong: {}", e);
@@ -93,7 +81,7 @@ fn generate_password(characters_settings: &GeneratorOption) -> Result<(), String
     Ok(())
 }
 
-fn setting_menu(characters_settings: &mut GeneratorOption) {
+fn setting_menu(characters_settings: &mut GeneratorOptions) {
     loop {
         clear_screen();
         println!("Settings Menu:");
@@ -108,7 +96,7 @@ fn setting_menu(characters_settings: &mut GeneratorOption) {
     }
 }
 
-fn using_characters(characters_settings: &mut GeneratorOption) {
+fn using_characters(characters_settings: &mut GeneratorOptions) {
     let check_mark = |status: bool| if status { "V" } else { " " };
 
     loop {

@@ -13,14 +13,14 @@ pub enum CharType {
     Symbols,
 }
 
-pub struct GeneratorOption {
+pub struct GeneratorOptions {
     pub uppercase: bool,
     pub lowercase: bool,
     pub numbers: bool,
     pub symbols: bool,
 }
 
-impl GeneratorOption {
+impl GeneratorOptions {
     pub fn new(uppercase: bool, lowercase: bool, numbers: bool, symbols: bool) -> Self {
         Self {
             uppercase,
@@ -54,7 +54,7 @@ impl GeneratorOption {
         active_count == 1
     }
 
-    pub fn get_pool(&self) -> String {
+    fn get_pool(&self) -> String {
         let mut pool = String::new();
 
         if self.uppercase {
@@ -75,11 +75,16 @@ impl GeneratorOption {
         pool
     }
 
-    pub fn generator(&self, chars: Vec<char>, length: usize) -> Result<String, String> {
+    pub fn generator(&self, length: usize) -> Result<String, String> {
         let mut rng = rand::rng();
 
+        let pool = &self.get_pool();
+        let chars: Vec<char> = pool.chars().collect();
+
         if chars.is_empty() {
-            return Err(String::from("Warning! No Characters Selected! Please select characters in [Settings]"));
+            return Err(String::from(
+                "Warning! No Characters Selected! Please select characters in [Settings]",
+            ));
         }
 
         let result: String = (0..length)
