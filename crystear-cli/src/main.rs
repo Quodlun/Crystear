@@ -3,10 +3,10 @@ use text_io::read;
 
 fn main() {
     let mut characters_settings: GeneratorOptions = GeneratorOptions {
-        uppercase: false,
-        lowercase: false,
-        numbers: false,
-        symbols: false,
+        uppercase: true,
+        lowercase: true,
+        numbers: true,
+        symbols: true,
     };
 
     main_menu(&mut characters_settings);
