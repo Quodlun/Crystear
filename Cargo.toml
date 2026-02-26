@@ -1,8 +1,9 @@
-[package]
-name = "Crystear"
-version = "0.1.1"
-edition = "2024"
+[workspace]
+members = [
+    "crystear-cli",
+    "crystear-core",
+]
 
-[dependencies]
-rand = "0.9.2"
-text_io = "0.1.13"
+resolve = "3"
+
+default-members = ["crystear-cli"]
